@@ -104,7 +104,7 @@ void Interface::performAll(Multiset& A, Multiset& B) {
     std::cout << "A inter B: "; A.intersectionWith(B).print(); std::cout << '\n';
     std::cout << "A \\ B: "; A.differenceWith(B).print(); std::cout << '\n';
     std::cout << "B \\ A: "; B.differenceWith(A).print(); std::cout << '\n';
-    std::cout << "A sym \\ B: "; A.symmetricDifferenceWith(B).print(); std::cout << '\n';
+    std::cout << "A /\\ B: "; A.symmetricDifferenceWith(B).print(); std::cout << '\n';
     std::cout << "A + B: "; A.arithmeticSum(B).print(); std::cout << '\n';
 	std::cout << "A - B: "; A.arithmeticDifferenceWith(B).print(); std::cout << '\n';
     std::cout << "B - A: "; B.arithmeticDifferenceWith(A).print(); std::cout << '\n';
@@ -141,7 +141,7 @@ void Interface::perform(std::string& nameA, std::string& nameB) {
             << "2. A inter B\n"
             << "3. A \\ B\n"
             << "4. B \\ A\n"
-            << "5. A sym \\ B\n"
+            << "5. A /\\ B\n"
             << "6. A + B\n"
             << "7. A - B\n"
             << "8. A * B\n"
@@ -264,6 +264,7 @@ void Interface::displayMenu() {
         << "4. Print all multisets' names\n"
         << "5. Print all multisets\n"
         << "6. Create a random multiset\n"
+        << "7. Reset\n"
 		<< "0. Exit\n> ";
 }
 
@@ -352,6 +353,13 @@ int Interface::run() {
                 createMultisets(true);
             else
                 createRandom();
+            W;
+            break;
+
+        case '7':
+            CL;
+            reset();
+            std::cout << "Resetted." << std::endl;
             W;
             break;
 
