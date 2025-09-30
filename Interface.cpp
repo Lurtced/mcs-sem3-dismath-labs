@@ -267,6 +267,12 @@ void Interface::displayMenu() {
 		<< "0. Exit\n> ";
 }
 
+void Interface::reset() {
+    data_.clear();
+    bitDepth_ = 0;
+    uniMultiplicity_ = 0;
+}
+
 int Interface::run() {
     int trash;
     std::string nameA;

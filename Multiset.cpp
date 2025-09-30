@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <sstream>
 
-int Multiset::maxMultiplicity = 10;
+int Multiset::maxMultiplicity;
 
 void Multiset::setMaxMultiplicity(int limit) {
     maxMultiplicity = limit;
@@ -208,14 +208,19 @@ Multiset Multiset::arithmeticDifferenceWith(const Multiset& other) const {
 }
 
 Multiset Multiset::symmetricDifferenceWith(const Multiset& other) const {
-    auto diffA = arithmeticDifferenceWith(other);
-    auto diffB = other.arithmeticDifferenceWith(*this);
+    /*auto diffA = arithmeticDifferenceWith(other);
+    auto diffB = other.arithmeticDifferenceWith(*this);*/
 
     Multiset result;
     result.universe = universe;
 
-    for (const auto& p : diffA.elements) result.elements[p.first] = p.second;
-    for (const auto& p : diffB.elements) result.elements[p.first] = p.second;
+    /*for (const auto& p : diffA.elements) result.elements[p.first] = p.second;
+    for (const auto& p : diffB.elements) result.elements[p.first] = p.second;*/
+
+    // disunction \ conjunction
+	auto uni = unionWith(other);
+	auto inter = intersectionWith(other);
+	result = uni.differenceWith(inter);
 
     return result;
 }
@@ -285,7 +290,7 @@ void Multiset::printU() const {
     bool first = true;
     for (const auto& p : universe) {
         if (!first) std::cout << ", ";
-        std::cout << "\"" << p << "\"^" << 10;
+        std::cout << "\"" << p << "\"^" << maxMultiplicity;
         first = false;
     }
     std::cout << "}" << std::endl;
