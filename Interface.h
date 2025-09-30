@@ -21,6 +21,7 @@ private:
 	void printNames();
 	void printAllMultisets();
 	void createRandom();
+	void deleteMultiset();
 	void reset();
 
 public:

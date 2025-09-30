@@ -264,8 +264,24 @@ void Interface::displayMenu() {
         << "4. Print all multisets' names\n"
         << "5. Print all multisets\n"
         << "6. Create a random multiset\n"
-        << "7. Reset\n"
+        << "7. Delete a multiset\n"
+		<< "8. Reset (delete all multisets and universe)\n"
 		<< "0. Exit\n> ";
+}
+
+void Interface::deleteMultiset() {
+    std::string name;
+    std::cout << "Enter the name of the multiset to delete: ";
+    std::cin >> name;
+    while (isValidName(name) || name == "U") { // Checks if it DOESN'T exist yet.
+        if (isValidName(name))
+            std::cout << "Multiset with this name doesn't exist. Please, try again: ";
+        else
+			std::cout << "Can't delete universe. Please, try again: ";
+        std::cin >> name;
+    }
+    data_.erase(name);
+	std::cout << "Deleted." << std::endl;
 }
 
 void Interface::reset() {
@@ -357,6 +373,17 @@ int Interface::run() {
             break;
 
         case '7':
+            CL;
+            if (data_.size() == 0) {
+                std::cout << "Nothing to delete. No multisets available." << std::endl;
+                W;
+                break;
+            }
+            deleteMultiset();
+            W;
+			break;
+
+        case '8':
             CL;
             reset();
             std::cout << "Resetted." << std::endl;
