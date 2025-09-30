@@ -160,7 +160,6 @@ Multiset Multiset::unionWith(const Multiset& other) const {
     * and put it in the temporary multiset 'result'.
     */
     Multiset result;
-    result.universe = universe;
 
     for (const auto& p : elements) {
         if (p.second > 0) {
@@ -177,7 +176,6 @@ Multiset Multiset::unionWith(const Multiset& other) const {
 
 Multiset Multiset::intersectionWith(const Multiset& other) const {
     Multiset result;
-    result.universe = universe;
 
     for (const auto& p : elements) {
         if (other.elements.count(p.first)) {
@@ -193,7 +191,6 @@ Multiset Multiset::differenceWith(const Multiset& other) const {
 
 Multiset Multiset::arithmeticDifferenceWith(const Multiset& other) const {
     Multiset result;
-    result.universe = universe;
 
     for (const auto& p : elements) {
         int count = p.second;
@@ -208,16 +205,7 @@ Multiset Multiset::arithmeticDifferenceWith(const Multiset& other) const {
 }
 
 Multiset Multiset::symmetricDifferenceWith(const Multiset& other) const {
-    /*auto diffA = arithmeticDifferenceWith(other);
-    auto diffB = other.arithmeticDifferenceWith(*this);*/
-
     Multiset result;
-    result.universe = universe;
-
-    /*for (const auto& p : diffA.elements) result.elements[p.first] = p.second;
-    for (const auto& p : diffB.elements) result.elements[p.first] = p.second;*/
-
-    // disunction \ conjunction
 	auto uni = unionWith(other);
 	auto inter = intersectionWith(other);
 	result = uni.differenceWith(inter);
@@ -227,17 +215,18 @@ Multiset Multiset::symmetricDifferenceWith(const Multiset& other) const {
 
 Multiset Multiset::arithmeticSum(const Multiset& other) const {
     Multiset result;
-    result.universe = universe;
 
     for (const auto& p : elements) result.elements[p.first] += p.second;
     for (const auto& p : other.elements) result.elements[p.first] += p.second;
+    for (auto& p : result.elements)
+        if (p.second > maxMultiplicity)
+            p.second = maxMultiplicity;
 
     return result;
 }
 
 Multiset Multiset::arithmeticProduct(const Multiset& other) const {
     Multiset result;
-    result.universe = universe;
 
     for (const auto& p : elements) {
         if (other.elements.count(p.first)) {
@@ -250,7 +239,6 @@ Multiset Multiset::arithmeticProduct(const Multiset& other) const {
 
 Multiset Multiset::arithmeticDivision(const Multiset& other) const {
     Multiset result;
-    result.universe = universe;
 
     for (const auto& p : elements)
         if (other.elements.count(p.first) && other.elements.at(p.first) > 0)
