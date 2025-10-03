@@ -23,7 +23,6 @@ void Interface::createMultisets(bool rand) {
 	if (data_.size() == 0) { // Here we set the universe parameters
         std::cout << "Enter bit depth: ";
         int depth;
-        IGN
         while (!(std::cin >> depth) || depth < 0) {
             std::cout << "Invalid input. Enter non-negative integer: ";
             IGN
