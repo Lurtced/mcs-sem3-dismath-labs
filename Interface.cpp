@@ -7,27 +7,26 @@
 
 #define CL system("cls")
 #define W std::cout << "Press any key to continue..."; trash = _getch()
+#define IGN std::cin.clear(); std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 bool Interface::isValidName(const std::string& name) {
-    return data_.find(name) == data_.end() && name != "";
-}
-
-bool Interface::canAdd(const std::string& name) {
-    if (!isValidName(name)) {
-        std::cout << "Multiset with this name already exists or the name is invalid.\n";
-        return false;
-    }
-    return true;
+    bool isValid = data_.find(name) == data_.end() && name != "";
+    if (isValid)
+        return true;
+    else
+        std::cout << "Multiset with this name already exists or name is invalid.\n"
+            << "Please, try again: ";
+    return false;
 }
 
 void Interface::createMultisets(bool rand) {
 	if (data_.size() == 0) { // Here we set the universe parameters
         std::cout << "Enter bit depth: ";
         int depth;
+        IGN
         while (!(std::cin >> depth) || depth < 0) {
             std::cout << "Invalid input. Enter non-negative integer: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            IGN
         }
 
         bitDepth_ = depth;
@@ -39,10 +38,10 @@ void Interface::createMultisets(bool rand) {
 
         std::cout << "Enter universum multiplicity: ";
         int multi;
+        IGN
         while (!(std::cin >> multi) || multi < 0) {
             std::cout << "Invalid input. Enter non-negative integer: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            IGN
         }
         Multiset::setMaxMultiplicity(multi);
         uniMultiplicity_ = multi;
@@ -51,6 +50,7 @@ void Interface::createMultisets(bool rand) {
         if (uniMultiplicity_ == 0)
 			Multiset::createUniverse(0);
         data_["U"] = Multiset::getUniverse();
+		uniSize_ = Multiset::getUniverse().size();
     }
 
     if (rand) {
@@ -62,8 +62,8 @@ void Interface::createMultisets(bool rand) {
         std::cout << "Enter name of the multiset: ";
         std::string name;
         std::cin >> name;
-        while (!canAdd(name)) {
-            std::cout << "The name is already taken or invalid. Please, try again: ";
+        while (!isValidName(name)) {
+            IGN
             std::cin >> name;
         }
         if (bitDepth_ * uniMultiplicity_ == 0) {
@@ -71,13 +71,17 @@ void Interface::createMultisets(bool rand) {
 		}
         std::cout << "\nHow to fill multiset?\n1. Manual\n2. Auto\n> ";
         int choice;
+        IGN
         while (!(std::cin >> choice) || (choice != 1 && choice != 2)) {
+            IGN
             std::cout << "Enter 1 or 2: ";
         }
 
         int sizeA;
         std::cout << "Enter size of the multiset " << name << ": ";
-        while (!(std::cin >> sizeA) || sizeA < 0 || sizeA > bitDepth_ * uniMultiplicity_) {
+        IGN
+        while (!(std::cin >> sizeA) || sizeA < 0 || sizeA > uniSize_) {
+            IGN
             std::cout << "Size can't be negative or more than universe's size: ";
         }
 
@@ -93,26 +97,25 @@ void Interface::createMultisets(bool rand) {
     }
 }
 
-void Interface::performAll(Multiset& A, Multiset& B) {
+void Interface::performAll(Multiset& A, Multiset& B, std::string& nameA, std::string& nameB) {
     std::cout << "\n======= MULTISETS =======\n";
     std::cout << "U: "; A.printU(); std::cout << '\n';
-    std::cout << "A: "; A.print(); std::cout << '\n';
-    std::cout << "B: "; B.print(); std::cout << '\n';
-
-    std::cout << "\n======= OPERATIONS =======\n";
-    std::cout << "A union B: "; A.unionWith(B).print(); std::cout << '\n';
-    std::cout << "A inter B: "; A.intersectionWith(B).print(); std::cout << '\n';
-    std::cout << "A \\ B: "; A.differenceWith(B).print(); std::cout << '\n';
-    std::cout << "B \\ A: "; B.differenceWith(A).print(); std::cout << '\n';
-    std::cout << "A /\\ B: "; A.symmetricDifferenceWith(B).print(); std::cout << '\n';
-    std::cout << "A + B: "; A.arithmeticSum(B).print(); std::cout << '\n';
-	std::cout << "A - B: "; A.arithmeticDifferenceWith(B).print(); std::cout << '\n';
-    std::cout << "B - A: "; B.arithmeticDifferenceWith(A).print(); std::cout << '\n';
-    std::cout << "A * B: "; A.arithmeticProduct(B).print(); std::cout << '\n';
-    std::cout << "A / B: "; A.arithmeticDivision(B).print(); std::cout << '\n';
-    std::cout << "B / A: "; B.arithmeticDivision(A).print(); std::cout << '\n';
-    std::cout << "Complement of A: "; auto compA = A.complement(); compA.print(); std::cout << '\n';
-    std::cout << "Complement of B: "; auto compB = B.complement(); compB.print(); std::cout << '\n';
+	std::cout << nameA << ": "; A.print(); std::cout << '\n';
+	std::cout << nameB << ": "; B.print(); std::cout << '\n';
+	std::cout << "\n======= OPERATIONS =======\n";
+	std::cout << nameA << " union " << nameB << ": "; A.unionWith(B).print(); std::cout << '\n';
+	std::cout << nameA << " inter " << nameB << ": "; A.intersectionWith(B).print(); std::cout << '\n';
+	std::cout << nameA << " \\ " << nameB << ": "; A.differenceWith(B).print(); std::cout << '\n';
+	std::cout << nameB << " \\ " << nameA << ": "; B.differenceWith(A).print(); std::cout << '\n';
+	std::cout << nameA << " /\\ " << nameB << ": "; A.symmetricDifferenceWith(B).print(); std::cout << '\n';
+	std::cout << nameA << " + " << nameB << ": "; A.arithmeticSum(B).print(); std::cout << '\n';
+	std::cout << nameA << " - " << nameB << ": "; A.arithmeticDifferenceWith(B).print(); std::cout << '\n';
+	std::cout << nameB << " - " << nameA << ": "; B.arithmeticDifferenceWith(A).print(); std::cout << '\n';
+	std::cout << nameA << " * " << nameB << ": "; A.arithmeticProduct(B).print(); std::cout << '\n';
+	std::cout << nameA << " / " << nameB << ": "; A.arithmeticDivision(B).print(); std::cout << '\n';
+	std::cout << nameB << " / " << nameA << ": "; B.arithmeticDivision(A).print(); std::cout << '\n';
+	std::cout << "Complement of " << nameA << ": "; auto compA = A.complement(); compA.print(); std::cout << '\n';
+	std::cout << "Complement of " << nameB << ": "; auto compB = B.complement(); compB.print(); std::cout << '\n';
 }
 
 void Interface::perform(std::string& nameA, std::string& nameB) {
@@ -137,19 +140,19 @@ void Interface::perform(std::string& nameA, std::string& nameB) {
     while (true) {
         CL;
         std::cout << "Choose an operation:\n"
-            << "1. A union B\n"
-            << "2. A inter B\n"
-            << "3. A \\ B\n"
-            << "4. B \\ A\n"
-            << "5. A /\\ B\n"
-            << "6. A + B\n"
-            << "7. A - B\n"
-            << "8. A * B\n"
-            << "9. A / B\n"
-            << "0. B / A\n"
-            << "d. Do all operations\n"
-            << "a. Complement of A\n"
-            << "b. Complement of B\n"
+            << "1. '" << nameA << "' union '" << nameB << "'\n"
+			<< "2. '" << nameB << "' inter '" << nameB << "'\n"
+			<< "3. '" << nameA << "' \\ '" << nameB << "'\n"
+			<< "4. '" << nameB << "' \\ '" << nameA << "'\n"
+			<< "5. '" << nameA << "' /\\ '" << nameB << "'\n"
+			<< "6. '" << nameA << "' + '" << nameB << "'\n"
+			<< "7. '" << nameA << "' - '" << nameB << "'\n"
+			<< "8. '" << nameA << "' * '" << nameB << "'\n"
+			<< "9. '" << nameA << "' / '" << nameB << "'\n"
+			<< "0. '" << nameB << "' / '" << nameA << "'\n"
+			<< "d. Do all operations\n"
+			<< "a. Complement of '" << nameA << "'\n"
+			<< "b. Complement of '" << nameB << "'\n"
             << "q. Go to main menu\n>";
 
         choice = _getch();
@@ -196,7 +199,7 @@ void Interface::perform(std::string& nameA, std::string& nameB) {
             W;
             break;
         case 'd':
-			performAll(data_[nameA], data_[nameB]);
+			performAll(data_[nameA], data_[nameB], nameA, nameB);
             W;
             break;
         case 'a':
