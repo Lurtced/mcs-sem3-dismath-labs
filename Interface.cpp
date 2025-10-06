@@ -14,8 +14,8 @@ bool Interface::isValidName(const std::string& name) {
     if (isValid)
         return true;
     else
-        std::cout << "Multiset with this name already exists or name is invalid.\n"
-            << "Please, try again: ";
+        /*std::cout << "Multiset with this name already exists or name is invalid.\n"
+            << "Please, try again: ";*/
     return false;
 }
 
